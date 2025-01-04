@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContentModel = exports.TagsModel = exports.UserModel = void 0;
+exports.ContentModel = exports.TagsModel = exports.UserModel = exports.LinkModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 mongoose_1.default.connect("mongodb+srv://ishwarreddy95460:ishwar@cluster0.osizg.mongodb.net/");
 const UserSchema = new mongoose_1.Schema({
@@ -43,12 +43,10 @@ const UserSchema = new mongoose_1.Schema({
 const TagsSchema = new mongoose_1.Schema({
     id: { type: Number, unique: true },
 });
-var contentTypes;
-(function (contentTypes) {
-    contentTypes[contentTypes["images"] = 0] = "images";
-    contentTypes[contentTypes["videos"] = 1] = "videos";
-    contentTypes[contentTypes["blogs"] = 2] = "blogs";
-})(contentTypes || (contentTypes = {}));
+const LinkSchema = new mongoose_1.Schema({
+    hash: { type: String, required: true },
+    userId: { type: mongoose_1.default.Types.ObjectId, required: true }
+});
 const ContentSchema = new mongoose_1.Schema({
     link: { type: String, required: true },
     type: { type: String, required: true },
@@ -56,6 +54,7 @@ const ContentSchema = new mongoose_1.Schema({
     // tags: [{ type: mongoose.Types.ObjectId, ref: "Tag" }],
     userId: { type: mongoose_1.default.Types.ObjectId, ref: "User", required: true },
 });
+exports.LinkModel = (0, mongoose_1.model)("Link", LinkSchema);
 exports.UserModel = (0, mongoose_1.model)("User", UserSchema);
 exports.TagsModel = (0, mongoose_1.model)("Tag", TagsSchema);
 exports.ContentModel = (0, mongoose_1.model)("Content", ContentSchema);

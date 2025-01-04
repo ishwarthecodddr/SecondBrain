@@ -20,6 +20,7 @@ const zod_1 = __importDefault(require("zod"));
 app.use(express_1.default.json());
 const db_1 = require("./db");
 const middleware_1 = require("./middleware");
+const util_1 = require("./util");
 const signupSchema = zod_1.default.object({
     username: zod_1.default.string().min(3, { message: "min 3 to 10 letters" }),
     password: zod_1.default.string().min(8, {
@@ -88,16 +89,59 @@ app.post("/content", middleware_1.Usermiddleware, (req, res) => __awaiter(void 0
 app.get("/content", middleware_1.Usermiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const content = yield db_1.ContentModel.find({
         // @ts-ignore
-        userId: req.userId
+        userId: req.userId,
     }).populate("userId", "username");
     res.json({ content });
 }));
 app.delete("/content", middleware_1.Usermiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const contentId = req.body.contentId;
     yield db_1.ContentModel.deleteOne({
-        userId: req.userId
+        contentId,
+        userId: req.userId,
     });
     res.json({ msg: "deleted successfully" });
 }));
-app.post("/brain/share", (req, res) => { });
-app.get("/brain/:shareLink", (req, res) => { });
+app.post("/brain/share", middleware_1.Usermiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const share = req.body.share;
+    try {
+        if (share) {
+            const hash = (0, util_1.Hashfuntion)(20);
+            yield db_1.LinkModel.create({
+                hash,
+                userId: req.userId,
+            });
+            res.json({ msg: "shared successfully" + "\n link: " + hash });
+        }
+        else {
+            yield db_1.LinkModel.deleteOne({
+                userId: req.userId,
+            });
+            res.json({ msg: "unshared successfully" });
+        }
+    }
+    catch (e) {
+        res.json(e);
+    }
+}));
+app.get("/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const hash = req.params.shareLink;
+    const link = yield db_1.LinkModel.findOne({
+        hash
+    });
+    if (!link) {
+        res.status(411).json({ msg: "Sent incorrect inputs" });
+        return; // early return
+    }
+    const user = yield db_1.UserModel.findOne({
+        _id: link.userId
+    });
+    if (!user) {
+        res.json("user doesn't exit!!! , control shouldn't reach here");
+        return;
+    }
+    const content = yield db_1.ContentModel.find({
+        userId: link.userId
+    });
+    res.json({ username: user.username, content: content });
+}));
 app.listen(3000);

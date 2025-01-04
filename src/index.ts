@@ -5,8 +5,9 @@ import { JWT_SECRET } from "./config";
 const app = express();
 import z, { string } from "zod";
 app.use(express.json());
-import { UserModel, TagsModel, ContentModel } from "./db";
+import { UserModel, TagsModel, ContentModel, LinkModel } from "./db";
 import { Usermiddleware } from "./middleware";
+import { Hashfuntion } from "./util";
 
 declare global {
   namespace Express {
@@ -74,32 +75,68 @@ app.post("/content", Usermiddleware, async (req, res) => {
       userId: req.userId,
       tags: [],
     });
-     res.json({msg:"content added"})
+    res.json({ msg: "content added" });
   } catch (e) {
-     res.json({ msg: "Some error while creating content" });
+    res.json({ msg: "Some error while creating content" });
     console.log(e);
   }
 });
 
-app.get("/content", Usermiddleware,async (req, res) => {
+app.get("/content", Usermiddleware, async (req, res) => {
   const content = await ContentModel.find({
     // @ts-ignore
-    userId: req.userId
-  }).populate("userId","username")
+    userId: req.userId,
+  }).populate("userId", "username");
   res.json({ content });
 });
 app.delete("/content", Usermiddleware, async (req, res) => {
   const contentId = req.body.contentId;
   await ContentModel.deleteOne({
     contentId,
-    userId: req.userId
-  })
-   res.json({ msg: "deleted successfully" });
+    userId: req.userId,
+  });
+  res.json({ msg: "deleted successfully" });
 });
 
-app.post("/brain/share", (req: Express.Request, res: Express.Response) => {});
-app.get(
-  "/brain/:shareLink",
-  (req: Express.Request, res: Express.Response) => {}
-);
+app.post("/brain/share", Usermiddleware, async (req, res) => {
+  const share = req.body.share;
+  try {
+    if (share) {
+      const hash = Hashfuntion(20);
+      await LinkModel.create({
+        hash ,
+        userId: req.userId,
+      });
+      res.json({msg:"shared successfully"+"\n link: "+hash},)
+    } else {
+      await LinkModel.deleteOne({
+        userId: req.userId,
+      });
+      res.json({ msg: "unshared successfully" });
+    }
+  } catch (e) {
+    res.json(e);
+  }
+});
+app.get("/brain/:shareLink",async (req, res) => {
+  const hash = req.params.shareLink;
+  const link = await LinkModel.findOne({
+    hash
+  })
+  if (!link) {
+    res.status(411).json({ msg: "Sent incorrect inputs" })
+    return;  // early return
+  }
+  const user = await UserModel.findOne({
+    _id: link.userId
+  })
+  if (!user) {
+    res.json("user doesn't exit!!! , control shouldn't reach here");
+    return;
+  }
+  const content = await ContentModel.find({
+    userId:link.userId
+  })
+  res.json({ username:user.username,content:content });
+});
 app.listen(3000);
