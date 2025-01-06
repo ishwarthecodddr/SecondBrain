@@ -7,7 +7,7 @@ interface buttonProps {
     endicon?: any,
     text: string,
     size: "sm" | "md" | "lg",
-    onClick: () => void
+    onClick?: () => void
 }
 const variantStyle = {
     "primary": "bg-purple-600 text-white",
@@ -23,7 +23,7 @@ const defaultStyle = "rounded-lg w-auto m-1"
 
 export const Button = (props: buttonProps) => {
     return <div>
-        <button className={`${variantStyle[props.variant]} ${defaultStyle} ${sizeStyle[props.size]} flex justify-center items-center`}>
+        <button onClick={props.onClick} className={`${variantStyle[props.variant]} ${defaultStyle} ${sizeStyle[props.size]} flex justify-center items-center`}>
             {(props.starticon) ? <div className="mr-1">{props.starticon}</div>:null}  {props.text}
         </button>
     </div>

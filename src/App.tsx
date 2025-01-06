@@ -1,18 +1,19 @@
-import {Plusicon} from "./components/icons/Plusicon"
-import { Shareicon } from "./components/icons/Shareicon"
-import { Button } from "./components/ui/Button"
+import { Dashboard } from './pages/Dashboard'
+import Signup from './auth/Signup'
+import Signin from './auth/Signin'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-export function App() {
-
+const App = () => {
   return (
-    <>
-      <div className="flex">
-        <Button variant="secondary" starticon={<Plusicon size="md"/>
-        } text="Add Content" size="sm" onClick={() => { }} />
-        <Button variant="primary" starticon={<Shareicon size="md"/>
-        } text="Share" size="sm" onClick={() => { }} />
-      </div>
-    </>
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="/signin" element={<Signin />}></Route >
+        </Routes >
+      </BrowserRouter >
+    </div >
   )
 }
 
