@@ -31,7 +31,13 @@ export const Dashboard = () => {
               starticon={<Shareicon size="md" />}
               text="Share Brain"
               size="sm"
-              onClick={() => {}}
+              onClick={() => {
+              navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Brain link copied to clipboard!");
+              }).catch(err => {
+                console.error("Failed to copy: ", err);
+              });
+              }}
             />
           </div>
           
