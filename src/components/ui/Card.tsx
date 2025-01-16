@@ -8,10 +8,9 @@ interface Cardprops {
     deleteicon: any,
     // tags: string,
     // date: Date,
-    type: "twitter" | "youtube",
+    type: "Twitter" | "Youtube",
     link: string
 }
-
 export const Card = (props: Cardprops) => {
     return <div className="shadow-md h-auto w-80 p-2 border border-gray-200">
         <div>
@@ -27,13 +26,22 @@ export const Card = (props: Cardprops) => {
             </div>
         </div>
         <div className="mt-2">
-            {props.type === "youtube" && <div><iframe className="rounded-md" width="100%" src={props.link.replace("watch?v=", "embed/")} title="Agam - Epic Hanuman Chalisa on Raghunandana Composition | HanuMan Movie" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe> </div>}
-
-            {props.type === "twitter" && <blockquote className="twitter-tweet w-full">
-                <a href={props.link.replace("x.com", "twitter.com")}></a>
-            </blockquote>}
-
+            {props.type === "Youtube" && (
+                <div className="relative w-full h-[200px]">
+                    <iframe 
+                        className="w-full h-full rounded-md"
+                        src={props.link.replace("watch?v=", "embed/")} 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                    />
+                </div>
+            )}
+            {props.type === "Twitter" && (
+                <blockquote className="twitter-tweet">
+                    <a href={props.link.replace("x.com", "twitter.com")}></a>
+                </blockquote>
+            )}
         </div>
     </div>
-
 }

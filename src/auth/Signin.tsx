@@ -23,8 +23,9 @@ const Signin = () => {
         <div className="flex justify-center bg-gray-300 items-center flex-col h-screen">
             <div className="bg-white rounded-md shadow-md p-4 h-2/4">
                 <h1 className="text-2xl font-semibold justify-center flex">SignIn</h1>
-                <Inputbox refrence={userNameRef} placeholder="Username" />
-                <Inputbox refrence={passowordRef} placeholder="Password" />
+                <Inputbox type="text" refrence={userNameRef}
+                    placeholder="Username" />
+                <Inputbox type="password" refrence={passowordRef} placeholder="Password" />
                 <div className="flex justify-center">
                     <Button onClick={signIn} variant="primary" size="md" text="submit" />
                 </div>

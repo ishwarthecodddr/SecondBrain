@@ -31,20 +31,21 @@ export const Dashboard = () => {
               starticon={<Shareicon size="md" />}
               text="Share Brain"
               size="sm"
-              onClick={() => { }}
+              onClick={() => {}}
             />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* {JSON.stringify(content)} */}
-            {content && content.map(({ title, link, type }) => (
-              <Card
-                deleteicon={Delete}
-                title={title}
-                shareIcon={<Shareicon size="md" />}
-                link={link}
-                type={type}
-              />
+            {content && content.map(({ _id, title, link, type }) => (
+              <div key={_id}>
+                <Card
+                  deleteicon={Delete}
+                  title={title}
+                  shareIcon={<Shareicon size="md" />}
+                  link={link}
+                  type={type}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -52,4 +53,3 @@ export const Dashboard = () => {
     </>
   );
 }
-
