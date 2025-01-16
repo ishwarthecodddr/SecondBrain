@@ -1,10 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "./config";
 const app = express();
 import z, { string } from "zod";
 app.use(express.json());
+app.use(cors());
 import { UserModel, TagsModel, ContentModel, LinkModel } from "./db";
 import { Usermiddleware } from "./middleware";
 import { Hashfuntion } from "./util";
@@ -124,12 +126,12 @@ app.get("/brain/:shareLink",async (req, res) => {
     hash
   })
   if (!link) {
-    res.status(411).json({ msg: "Sent incorrect inputs" })
-    return;  // early return
+    res.status(411).json({ msg: "Sent incorrect inputs" });
+    return; // early return
   }
   const user = await UserModel.findOne({
     _id: link.userId
-  })
+  });
   if (!user) {
     res.json("user doesn't exit!!! , control shouldn't reach here");
     return;
